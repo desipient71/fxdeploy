@@ -1,31 +1,52 @@
 #!/bin/sh
-# V2Ray new configuration
-# Run V2ray
-# Write V2Ray configuration
-cat << EOF > /etc/v2ray/config.json
+##
+
+# Set ARG
+UUID=bfb3c9a2-6bfe-4e97-80f6-1da401700f20
+#ARCH="64"
+cat <<EOF >/etc/v2ray/config.json
 {
-    "inbounds": [{
-        "port": 8080,
-        "protocol": "vmess",
-        "settings": {
-            "clients": [{
-                "id": "bfb3c9a2-6bfe-4e97-80f6-1da401700f20",
-                "alterId": 0
-            }]
-        },
-        "streamSettings": {
-            "network": "ws",
-            "wsSettings": {
-                "path": "/lawrkrc"
-            }
-        }
-    }],
-    "outbounds": [{
-        "protocol": "freedom"
-    }]
+    "log": {
+        "loglevel": "warning"
+    },
+	"inbounds": [
+		{
+			"listen": "0.0.0.0",
+			"port": 8080,
+			"protocol": "vless",
+			"settings": {
+				"clients": [
+					{
+						"id": "$UUID"
+					}
+				],
+			"decryption": "none"
+		},
+		"streamSettings": {
+			"network": "ws",
+			"wsSettings": {
+					"path": "/$UUID-vless"
+				}
+			}
+		}
+	],
+	"outbounds": [
+		{
+			"protocol": "freedom"
+		}
+	]
 }
 EOF
 
-#Run V2ray
 
+chmod +x /usr/bin/v2ray/v2ray
+ls -la /usr/bin/v2ray/*
+echo "Install done"
+echo "--------------------------------"
+echo "Fly App Name: ${FLY_APP_NAME}"
+echo "Fly App Region: ${FLY_REGION}"
+echo "V2Ray UUID: ${UUID}"
+echo "--------------------------------"
+
+# Run v2ray
 /usr/bin/v2ray/v2ray  run -config=/etc/v2ray/config.json
